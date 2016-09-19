@@ -5,11 +5,8 @@
  */
 package com.markoproject.dao;
 
-import com.markoproject.dao.impl.CategoryDaoImpl;
-import com.markoproject.dao.impl.CityDaoImpl;
-import com.markoproject.dao.impl.ProductDaoImpl;
-import com.markoproject.dao.impl.UserDaoImpl;
 
+import com.markoproject.dao.impl.*;
 /**
  *
  * @author Marko
@@ -20,6 +17,8 @@ public class DaoFactory {
 private ProductDao productDao;
 private CityDao cityDao;
 private CategoryDao categoryDao;
+private ReserveDao reserveDao;
+   
    
     private DaoFactory(){}
     public static DaoFactory getInstance(){
@@ -35,11 +34,17 @@ private CategoryDao categoryDao;
         return productDao;
     }
         public CityDao getCityDao(){
-        if (cityDao==null) cityDao=new CityDaoImpl();
+ 
+            if (cityDao==null) cityDao=new CityDaoImpl();
         return cityDao;
     }
           public CategoryDao getCategoryDao(){
         if (categoryDao==null) categoryDao=new CategoryDaoImpl();
         return categoryDao;
+    }
+          
+               public ReserveDao getReserveDao(){
+        if (reserveDao==null) reserveDao=new ReserveDaoImpl();
+        return reserveDao;
     }
 }

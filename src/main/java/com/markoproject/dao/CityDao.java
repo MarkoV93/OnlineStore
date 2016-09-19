@@ -18,4 +18,5 @@ public interface CityDao {
      public void addCity(City city) throws SQLException;
       public List<City> getCitys() throws SQLException;
       public City getCity(int id) throws SQLException;
+       public void deleteCity(int id ) throws SQLException;
 }

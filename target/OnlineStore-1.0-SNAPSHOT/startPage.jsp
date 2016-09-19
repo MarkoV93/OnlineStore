@@ -13,8 +13,15 @@
     </head>
     <body>
         <h1>Hello World!</h1>
-        <form action="login" method="post" >
-        <input type="submit" name="OK" >
+        <form action="registerForm" method="get" >
+        <button type="submit" >registration</button>
+    </form>
+         <form action="loginForm" method="get" >
+        <button type="submit" >login</button>
+    </form>
+  
+        <form action="products/all" method="get" >
+        <button type="submit" >store</button>
     </form>
     </body>
 </html>

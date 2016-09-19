@@ -40,12 +40,12 @@ public class Product {
     @Column(columnDefinition = "varchar(1000)")
     private String description;
 
-    @NotEmpty(message = "Please enter city.")
+ 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "city_id")
     private City city;
 
-     @NotEmpty(message = "Please enter category.")
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private Category category;

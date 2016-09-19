@@ -18,4 +18,6 @@ public interface CategoryDao {
     public void addCategory(Category category) throws SQLException;
       public List<Category> getCategories() throws SQLException;
       public Category getCategory(int id) throws SQLException;
+      public void deleteCategory(int id) throws SQLException;
+      public Category getCategoryByName(String name) throws SQLException;
 }

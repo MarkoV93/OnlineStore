@@ -9,57 +9,50 @@ import com.markoproject.dao.CategoryDao;
 import com.markoproject.table.Category;
 import com.markoproject.table.City;
 import com.markoproject.table.Product;
+import com.markoproject.table.User;
 import com.markoproject.util.HibernateUtil;
 import java.sql.SQLException;
 import java.util.List;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 /**
  *
  * @author Marko
  */
-public class CategoryDaoImpl implements CategoryDao{
+public class CategoryDaoImpl extends AbstractDao implements CategoryDao{
 
     @Override
     public void addCategory(Category category) throws SQLException {
-      Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction();
-            session.save(category);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-
-        } finally {
-            if ((session != null) && (session.isOpen())) {
-                session.close();
-            }
-        }
+       super.saveOrUpdate(category);
     }
 
     @Override
     public List<Category> getCategories() throws SQLException {     
-        List<Category> result = null;
-        Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            result = session.createCriteria(Category.class).list();
-        } catch (Exception e) {
-        } finally {
-            if ((session != null) && (session.isOpen())) {
-                session.close();
-            }
-        }
-        return result;
+      List<Category> categories = super.getAll(Category.class);
+        return categories;
     }
 
     @Override
     public Category getCategory(int id) throws SQLException {
+       return (Category) super.get(Category.class, id);
+    }
+    
+    @Override
+    public void deleteCategory(int id) throws SQLException {
+       super.delete(Category.class,id);
+    }
+
+    @Override
+    public Category getCategoryByName(String name) throws SQLException {
        Category result = null;
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            result = (Category) session.get(Category.class, id);
+           Criteria categoryCriteria = session.createCriteria(Category.class);
+            categoryCriteria.add(Restrictions.eq("name",name));
+            result = (Category) categoryCriteria.uniqueResult();      
         } catch (Exception e) {
         } finally {
             if ((session != null) && (session.isOpen())) {

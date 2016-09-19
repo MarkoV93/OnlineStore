@@ -21,69 +21,40 @@ import org.hibernate.criterion.Restrictions;
  *
  * @author Marko
  */
-public class ProductDaoImpl implements ProductDao{
+public class ProductDaoImpl extends AbstractDao implements ProductDao{
 
     @Override
-    public void addProduct(Product product,int cityId,int categoryId) throws SQLException {
-        Session session = null;
-        try {
-            
-            session = HibernateUtil.getSessionFactory().openSession();
-             session.beginTransaction();
-            session.load(City.class, cityId);
-            session.load(Category.class,categoryId);      
-            session.save(product);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-
-        } finally {
-            if ((session != null) && (session.isOpen())) {
-                session.close();
-            }
-        }
+    public void addProduct(Product product) throws SQLException {
+   super.saveOrUpdate(product);
     }
 
     @Override
     public void deleteProduct(int id) throws SQLException {
-     Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-          Product product   = (Product) session.load(Product.class, id);
-            session.beginTransaction();
-            session.delete(product);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-
-        } finally {
-            if ((session != null) && (session.isOpen())) {
-                session.close();
-            }
-        }
+    super.delete(Product.class, id);
     }
 
     @Override
     public Product getProduct(int id) throws SQLException {
-        Product result = null;
-        Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            result = (Product) session.load(Product.class, id);
-        } catch (Exception e) {
-        } finally {
-            if ((session != null) && (session.isOpen())) {
-                session.close();
-            }
-        }
-        return result;
+     return (Product)super.get(Product.class, id);
     }
 
     @Override
     public List<Product> getProducts() throws SQLException {
-     List<Product> result = null;
+     List<Product> result = super.getAll(Product.class);
+       
+        return result;
+    }
+
+    @Override
+    public List<Product> getByCategory(Category category) throws SQLException {
+          List<Product> result = null;
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            result = session.createCriteria(Product.class).list();
+           Criteria productCriteria = session.createCriteria(Product.class);
+            productCriteria.add(Restrictions.eq("category", category));
+           result = productCriteria.list();
+            
         } catch (Exception e) {
         } finally {
             if ((session != null) && (session.isOpen())) {
@@ -91,5 +62,8 @@ public class ProductDaoImpl implements ProductDao{
             }
         }
         return result;
+    
     }
 }
+    
+

@@ -19,49 +19,22 @@ import org.hibernate.criterion.Restrictions;
  *
  * @author Marko
  */
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl extends AbstractDao implements UserDao{
       @Override
     public void addUser(User user) throws SQLException {
-             Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction();
-            session.save(user);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-
-        } finally {
-            if ((session != null) && (session.isOpen())) {
-                session.close();
-            }
-        }
+ super.saveOrUpdate(user);
     }
     
 
     @Override
-    public void deleteUser(String login) throws SQLException {
-          Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-              Criteria userCriteria = session.createCriteria(User.class);
-            userCriteria.add(Restrictions.eq("login", login));
-           User user  = (User) userCriteria.uniqueResult();
-            session.beginTransaction();
-            session.delete(user);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-
-        } finally {
-            if ((session != null) && (session.isOpen())) {
-                session.close();
-            }
-        }
+    public void deleteUser(int id) throws SQLException {
+super.delete(User.class, id);
     }
     
 
     @Override
     public User getUser(String login) throws SQLException  {
-        User result = null;
+       User result = null;
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
@@ -77,6 +50,7 @@ public class UserDaoImpl implements UserDao{
         }
         return result;
     }
+    
 
     @Override
     public Boolean verifyUser(String login,String password) throws SQLException {
@@ -84,10 +58,10 @@ public class UserDaoImpl implements UserDao{
         Session session = null;
         try {
          session = HibernateUtil.getSessionFactory().openSession();
-        Query query = session.getNamedQuery("verifyUser");
-        query.setString("login", login);
-         query.setString("password", password);
-        result = (User) query.uniqueResult();
+           Criteria userCriteria = session.createCriteria(User.class);
+            userCriteria.add(Restrictions.eq("login", login));
+            userCriteria.add(Restrictions.eq("password", password));
+            result = (User) userCriteria.uniqueResult();
       } catch (Exception e) {
         } finally {
             if ((session != null) && (session.isOpen())) {
@@ -100,18 +74,8 @@ public class UserDaoImpl implements UserDao{
     @Override
     public List<User> getUsers() throws SQLException {
 
-        List<User> result = null;
-        Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            result = session.createCriteria(User.class).list();
-        } catch (Exception e) {
-        } finally {
-            if ((session != null) && (session.isOpen())) {
-                session.close();
-            }
-        }
-        return result;
+      List<User> users=super.getAll(User.class);
+      return users;
     }
     
 

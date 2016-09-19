@@ -5,9 +5,11 @@
  */
 package com.markoproject.dao.impl;
 
+import com.markoproject.dao.CityDao;
 import com.markoproject.dao.DaoFactory;
 import com.markoproject.dao.UserDao;
 import com.markoproject.dao.impl.UserDaoImpl;
+import com.markoproject.table.City;
 import com.markoproject.table.User;
 import java.sql.SQLException;
 import org.junit.Assert;
@@ -24,10 +26,10 @@ public class UserDaoImpl {
     public void getUser() throws SQLException{
         System.out.println("asdasd");
         DaoFactory factory=DaoFactory.getInstance();
-        UserDao users=factory.getUserDao();
-        UserDaoImpl userDao=new UserDaoImpl();
-        User user=users.getUser("admin");
-        Assert.assertEquals(user.getName(), "arsen");
+        CityDao users=factory.getCityDao();
+       City city= users.getCity(1);
+      
+        Assert.assertEquals(city.getName(), "NY");
        
     }
 }

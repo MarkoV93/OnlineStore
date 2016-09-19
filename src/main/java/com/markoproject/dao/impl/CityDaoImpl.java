@@ -18,56 +18,34 @@ import org.hibernate.Session;
  *
  * @author Marko
  */
-public class CityDaoImpl implements CityDao{
+public class CityDaoImpl extends AbstractDao implements CityDao {
 
-    @Override
+//    public CityDaoImpl(){
+//        super();
+//    }
+    //   @Override
+    public CityDaoImpl() {
+        super();
+    }
+
     public void addCity(City city) throws SQLException {
-        Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            session.beginTransaction();
-            session.save(city);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-
-        } finally {
-            if ((session != null) && (session.isOpen())) {
-                session.close();
-            }
-        }
+        super.saveOrUpdate(city);
     }
 
-    @Override
+    //  @Override
     public List<City> getCitys() throws SQLException {
-      
-        List<City> result = null;
-        Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            result = session.createCriteria(City.class).list();
-        } catch (Exception e) {
-        } finally {
-            if ((session != null) && (session.isOpen())) {
-                session.close();
-            }
-        }
-        return result;
+        List<City> citys = super.getAll(City.class);
+        return citys;
+
     }
 
-    @Override
+    // @Override
     public City getCity(int id) throws SQLException {
-          City result = null;
-        Session session = null;
-        try {
-            session = HibernateUtil.getSessionFactory().openSession();
-            result = (City) session.get(City.class, id);
-        } catch (Exception e) {
-        } finally {
-            if ((session != null) && (session.isOpen())) {
-                session.close();
-            }
-        }
-        return result;
+        return (City) super.get(City.class, id);
     }
-    
+
+    public void deleteCity(int id ) throws SQLException {
+       super.delete(City.class,id);
+    }
+
 }
