@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 /**
@@ -39,19 +40,22 @@ public class ProductDaoImpl extends AbstractDao implements ProductDao{
     }
 
     @Override
-    public List<Product> getProducts() throws SQLException {
-     List<Product> result = super.getAll(Product.class);
+    public List<Product> getProducts(Integer page) throws SQLException {
+        if(page==null) page=0;
+     List<Product> result = super.getAll(Product.class,page);
        
         return result;
     }
 
     @Override
-    public List<Product> getByCategory(Category category) throws SQLException {
+    public List<Product> getByCategory(Category category,Integer page) throws SQLException {
+        if(page==null) page=0;
           List<Product> result = null;
         Session session = null;
         try {
             session = HibernateUtil.getSessionFactory().openSession();
            Criteria productCriteria = session.createCriteria(Product.class);
+           productCriteria.setFirstResult(page * 10).setMaxResults(10);
             productCriteria.add(Restrictions.eq("category", category));
            result = productCriteria.list();
             
@@ -63,6 +67,27 @@ public class ProductDaoImpl extends AbstractDao implements ProductDao{
         }
         return result;
     
+    }
+
+    @Override
+    public int getCountOfProducts(Category category) throws SQLException {
+        int count=0;
+          Session session = null;
+        try {
+            session = HibernateUtil.getSessionFactory().openSession();
+           Criteria productCriteria = session.createCriteria(Product.class);
+           if(category!=null){
+            productCriteria.add(Restrictions.eq("category", category));
+           }
+           count =((Number)productCriteria.setProjection(Projections.rowCount()).uniqueResult()).intValue();
+           
+        } catch (Exception e) {
+        } finally {
+            if ((session != null) && (session.isOpen())) {
+                session.close();
+            }
+        }
+         return count;
     }
 }
     

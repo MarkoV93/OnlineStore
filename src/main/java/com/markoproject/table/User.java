@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
@@ -45,6 +46,7 @@ public class User {
       @Column(name="phone")
     private String phone;
       
+      @Email(message="Please provide a valid email address")
          @NotEmpty(message = "Please enter your @mail.")
       @Column(name="email")
     private String email;

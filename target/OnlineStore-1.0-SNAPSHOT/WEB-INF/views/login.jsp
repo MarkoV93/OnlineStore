@@ -29,5 +29,6 @@
             <br>
               <input type="submit" value="login"/>
                     </form:form>
+               <button onclick="window.location.href='http://localhost:8084/OnlineStore/register'">Registration</button>
     </body>
 </html>

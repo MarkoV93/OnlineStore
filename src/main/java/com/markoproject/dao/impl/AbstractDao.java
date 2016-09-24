@@ -77,7 +77,22 @@ public abstract class AbstractDao {
         }
         return objects;
     }
-
+protected List getAll(Class clazz,int page) {
+        List objects = null;
+        try {
+            startOperation();
+            Query query = session.createQuery("from " + clazz.getName());
+            query.setFirstResult(page*10);
+query.setMaxResults(10);
+            objects = query.list();
+            tx.commit();
+        } catch (HibernateException e) {
+            handleException(e);
+        } finally {
+          session.close();
+        }
+        return objects;
+    }
     protected void handleException(HibernateException e)  {
   e.printStackTrace();
     }

@@ -18,6 +18,7 @@ public class ReserveDaoImpl extends AbstractDao implements ReserveDao{
 
     @Override
     public void addReserve(Reserve reserve) throws SQLException {
+        reserve.setStatus(0);
        super.saveOrUpdate(reserve);
     }
 

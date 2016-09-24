@@ -25,33 +25,52 @@ import org.springframework.web.bind.annotation.SessionAttributes;
  */
 @Controller
 @SessionAttributes({"categories"})
-@RequestMapping(value="/products")
+@RequestMapping(value = "/products")
 public class ProductController {
-   
-    @RequestMapping(value="/{category}", method = RequestMethod.GET)
-	public String getCart(@PathVariable("category") String name, Map<String, Object> model) throws SQLException{
-	       DaoFactory daoFactory=DaoFactory.getInstance();
-               Category category=daoFactory.getCategoryDao().getCategoryByName(name);
-               List<Product> products=daoFactory.getProductDao().getByCategory(category);
-               model.put("products", products);
-		return "store";
-	}
-        
-        @RequestMapping(value="/all", method = RequestMethod.GET)
-	public String getCartt( Map<String, Object> model) throws SQLException{
-	   DaoFactory daoFactory=DaoFactory.getInstance();
-List<Category> categories =daoFactory.getCategoryDao().getCategories();
-model.put("categories", categories);
-List<Product> products=daoFactory.getProductDao().getProducts();
-model.put("products", products);
-		return "store";
-	}
-         @RequestMapping(value="/showProduct/{productId}", method = RequestMethod.GET)
-	public String showProduct(@PathVariable("productId") int productId, Map<String, Object> model) throws SQLException{
- DaoFactory daoFactory=DaoFactory.getInstance();
- Product product=daoFactory.getProductDao().getProduct(productId);
- model.put("product", product);
-		return "product";
-	}
+
+    @RequestMapping(value = "/{category}", method = RequestMethod.GET)
+    public String getCart(@PathVariable("category") String name, Map<String, Object> model,@RequestParam(required=false) Integer page) throws SQLException {
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        Category category = daoFactory.getCategoryDao().getCategoryByName(name);
+        List<Product> products = daoFactory.getProductDao().getByCategory(category,page);
+        model.put("products", products);
+        model.put("path", name);
+        int count = daoFactory.getProductDao().getCountOfProducts(category);
+         int pages = count / 10;
+         System.out.println(count);
+         System.out.println(count % 10 != 0);
+       if (count % 10 == 0) {
+            pages--;
+        }
+       // count++;
+        model.put("pages", pages);
+        return "store";
+    }
+
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public String getCartt(Map<String, Object> model, @RequestParam(required=false) Integer page) throws SQLException {
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        List<Category> categories = daoFactory.getCategoryDao().getCategories();
+        model.put("categories", categories);
+        List<Product> products = daoFactory.getProductDao().getProducts(page);
+        model.put("products", products);
+         model.put("path", "all");
+        int count = daoFactory.getProductDao().getCountOfProducts(null);
+        int pages = count / 10;
+        if (count % 10 == 0) {
+            pages--;
+        }
+      //  count++;
+        model.put("pages", pages);
+        return "store";
+    }
+
+    @RequestMapping(value = "/showProduct/{productId}", method = RequestMethod.GET)
+    public String showProduct(@PathVariable("productId") int productId, Map<String, Object> model) throws SQLException {
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        Product product = daoFactory.getProductDao().getProduct(productId);
+        model.put("product", product);
+        return "product";
+    }
 
 }
